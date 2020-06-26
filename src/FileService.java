@@ -1,4 +1,9 @@
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class FileService {
@@ -29,10 +34,23 @@ public class FileService {
 
     private static void  processData(String line, String model, String filename){
 
+        Date date = null;
+        int year = 0;
        String dateOfSales = line.split(",")[0];
        int sales = Integer.parseInt(line.split(",")[1]);
 
-       CarSalesData lineData = new CarSalesData("Tesla",model,dateOfSales,sales);
+        DateFormat df = new SimpleDateFormat("MMM-yy");
+        try {
+            date = df.parse(dateOfSales);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            year = cal.get(Calendar.YEAR);
+        } catch (ParseException ex) {
+            date = null;
+        }
+
+
+        CarSalesData lineData = new CarSalesData("Tesla", model, date, sales, year);
 
        if (filename.equals("model3.csv")) {
 

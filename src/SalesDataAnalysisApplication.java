@@ -1,6 +1,7 @@
-import java.util.ArrayList;
-import java.util.IntSummaryStatistics;
-import java.util.Optional;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class SalesDataAnalysisApplication {
@@ -27,57 +28,44 @@ public class SalesDataAnalysisApplication {
         System.out.println("Model 3 Yearly Sales Report");
         System.out.println("--------------------------------------------------");
 
-        int salesAgg2017 = model3Data.stream()
-                .filter(y -> y.getSaleDate().contains("-17"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
 
-        int salesAgg2018 = model3Data.stream()
-                .filter(y -> y.getSaleDate().contains("-18"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
+        // We need to aggregate the sales yearwise . So we are using the grouping by year and getting the summary stats based on year
+        //we are storing this into a map
+        // From the map will be getting the year and corresponding sum from the stats.
+        Map<Integer, IntSummaryStatistics> yearSales = model3Data.stream()
+                .collect(Collectors.groupingBy(CarSalesData::getSaleYear, Collectors.summarizingInt(CarSalesData::getSalesCount)));
 
-        int salesAgg2019 = model3Data.stream()
-                .filter(y -> y.getSaleDate().contains("-19"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
+        yearSales.entrySet().stream().forEach(e -> System.out.println(e.getKey() + " -> " + e.getValue().getSum()));
 
-
-        System.out.println("2017    -> "+salesAgg2017);
-        System.out.println("2018    -> "+salesAgg2018);
-        System.out.println("2019    -> "+salesAgg2019);
-
-
-        //
 
         IntSummaryStatistics summaryStatisticsModel3 = model3Data.stream()
                 .mapToInt(a -> a.getSalesCount())
                 .summaryStatistics();
 
-        Optional<String> minSalesMonthOpt = Optional.empty();
+        Optional<Date> minSalesMonthOpt = Optional.empty();
 
         minSalesMonthOpt = model3Data.stream()
                 .filter(y -> y.getSalesCount() == summaryStatisticsModel3.getMin() )
                 .map(s -> s.getSaleDate())
                 .findAny();
 
-        String minSalesMonthModel3 = minSalesMonthOpt.orElse("No Data");
+        Date minSalesMonthModel3 = minSalesMonthOpt.orElse(new Date());
 
 
-        Optional<String> maxSalesMonthOpt = Optional.empty();
+        Optional<Date> maxSalesMonthOpt = Optional.empty();
 
         maxSalesMonthOpt = model3Data.stream()
                 .filter(y -> y.getSalesCount() == summaryStatisticsModel3.getMax() )
                 .map(s -> s.getSaleDate())
                 .findAny();
 
-        String maxSalesMonthModel3 = maxSalesMonthOpt.orElse("No Data");
+        Date maxSalesMonthModel3 = maxSalesMonthOpt.orElse(new Date());
 
-
+        DateFormat df = new SimpleDateFormat("MMM-yy");
 
         System.out.println();
-        System.out.println("The best month for Model 3 was: "+maxSalesMonthModel3);
-        System.out.println("The worst month for Model 3 was: "+minSalesMonthModel3);
+        System.out.println("The best month for Model 3 was: " + df.format(maxSalesMonthModel3));
+        System.out.println("The worst month for Model 3 was: " + df.format(minSalesMonthModel3));
 
 
     }
@@ -88,66 +76,45 @@ public class SalesDataAnalysisApplication {
         System.out.println("Model S Yearly Sales Report");
         System.out.println("--------------------------------------------------");
 
-        int salesAgg2016 = modelSData.stream()
-                .filter(y -> y.getSaleDate().contains("-16"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
 
-        int salesAgg2017 = modelSData.stream()
-                .filter(y -> y.getSaleDate().contains("-17"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
+        Map<Integer, IntSummaryStatistics> yearSales = modelSData.stream()
+                .collect(Collectors.groupingBy(CarSalesData::getSaleYear, Collectors.summarizingInt(CarSalesData::getSalesCount)));
 
-        int salesAgg2018 = modelSData.stream()
-                .filter(y -> y.getSaleDate().contains("-18"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
+        yearSales.entrySet().stream().forEach(e -> System.out.println(e.getKey() + " -> " + e.getValue().getSum()));
 
-        int salesAgg2019 = modelSData.stream()
-                .filter(y -> y.getSaleDate().contains("-19"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
-
-
-        System.out.println("2016    -> "+salesAgg2016);
-        System.out.println("2017    -> "+salesAgg2017);
-        System.out.println("2018    -> "+salesAgg2018);
-        System.out.println("2019    -> "+salesAgg2019);
-
-
-        //
 
         IntSummaryStatistics summaryStatisticsModelS = modelSData.stream()
                 .mapToInt(a -> a.getSalesCount())
                 .summaryStatistics();
 
-        Optional<String> minSalesMonthOpt = Optional.empty();
+        Optional<Date> minSalesMonthOpt = Optional.empty();
 
         minSalesMonthOpt = modelSData.stream()
                 .filter(y -> y.getSalesCount() == summaryStatisticsModelS.getMin() )
                 .map(s -> s.getSaleDate())
                 .findAny();
 
-        String minSalesMonthModelS = minSalesMonthOpt.orElse("No Data");
+        Date minSalesMonthModelS = minSalesMonthOpt.orElse(new Date());
 
 
-        Optional<String> maxSalesMonthOpt = Optional.empty();
+        Optional<Date> maxSalesMonthOpt = Optional.empty();
 
         maxSalesMonthOpt = modelSData.stream()
                 .filter(y -> y.getSalesCount() == summaryStatisticsModelS.getMax() )
                 .map(s -> s.getSaleDate())
                 .findAny();
 
-        String maxSalesMonthModelS = maxSalesMonthOpt.orElse("No Data");
+        Date maxSalesMonthModelS = maxSalesMonthOpt.orElse(new Date());
 
 
-
+        DateFormat df = new SimpleDateFormat("MMM-yy");
         System.out.println();
-        System.out.println("The best month for Model S was: "+maxSalesMonthModelS);
-        System.out.println("The worst month for Model S was: "+minSalesMonthModelS);
+        System.out.println("The best month for Model S was: " + df.format(maxSalesMonthModelS));
+        System.out.println("The worst month for Model S was: " + df.format(minSalesMonthModelS));
 
 
     }
+
 
     private static void generateReportForModelX(){
 
@@ -155,65 +122,43 @@ public class SalesDataAnalysisApplication {
         System.out.println("Model X Yearly Sales Report");
         System.out.println("--------------------------------------------------");
 
-        int salesAgg2016 = modelXData.stream()
-                .filter(y -> y.getSaleDate().contains("-16"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
 
-        int salesAgg2017 = modelXData.stream()
-                .filter(y -> y.getSaleDate().contains("-17"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
+        Map<Integer, IntSummaryStatistics> yearSales = modelXData.stream()
+                .collect(Collectors.groupingBy(CarSalesData::getSaleYear, Collectors.summarizingInt(CarSalesData::getSalesCount)));
 
-        int salesAgg2018 = modelXData.stream()
-                .filter(y -> y.getSaleDate().contains("-18"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
+        yearSales.entrySet().stream().forEach(e -> System.out.println(e.getKey() + " -> " + e.getValue().getSum()));
 
-        int salesAgg2019 = modelXData.stream()
-                .filter(y -> y.getSaleDate().contains("-19"))
-                .mapToInt(a -> a.getSalesCount())
-                .sum();
-
-
-        System.out.println("2016    -> "+salesAgg2016);
-        System.out.println("2017    -> "+salesAgg2017);
-        System.out.println("2018    -> "+salesAgg2018);
-        System.out.println("2019    -> "+salesAgg2019);
-
-
-        //
 
         IntSummaryStatistics summaryStatisticsModelX = modelXData.stream()
                 .mapToInt(a -> a.getSalesCount())
                 .summaryStatistics();
 
-
-        Optional<String> minSalesMonthOpt = Optional.empty();
+        Optional<Date> minSalesMonthOpt = Optional.empty();
 
         minSalesMonthOpt = modelXData.stream()
                 .filter(y -> y.getSalesCount() == summaryStatisticsModelX.getMin() )
                 .map(s -> s.getSaleDate())
                 .findAny();
 
-        String minSalesMonthModelX = minSalesMonthOpt.orElse("No Data");
+        Date minSalesMonthModelX = minSalesMonthOpt.orElse(new Date());
 
-
-        Optional<String> maxSalesMonthOpt = Optional.empty();
+        Optional<Date> maxSalesMonthOpt = Optional.empty();
 
         maxSalesMonthOpt = modelXData.stream()
                 .filter(y -> y.getSalesCount() == summaryStatisticsModelX.getMax() )
                 .map(s -> s.getSaleDate())
                 .findAny();
 
-        String maxSalesMonthModelX = maxSalesMonthOpt.orElse("No Data");
+        Date maxSalesMonthModelX = maxSalesMonthOpt.orElse(new Date());
 
 
-
+        DateFormat df = new SimpleDateFormat("MMM-yy");
         System.out.println();
-        System.out.println("The best month for Model X was: "+maxSalesMonthModelX);
-        System.out.println("The worst month for Model X was: "+minSalesMonthModelX);
+        System.out.println("The best month for Model X was: " + df.format(maxSalesMonthModelX));
+        System.out.println("The worst month for Model X was: " + df.format(minSalesMonthModelX));
 
 
     }
+
+
 }
