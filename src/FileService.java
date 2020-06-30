@@ -1,18 +1,19 @@
 import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 public class FileService {
 
 
-    public static void processCSVFile(String filename){
+    public static List<CarSalesData> processCSVFile(String filename, String modelType) {
 
         BufferedReader reader = null;
         String line = null;
+        List<CarSalesData> carSalesList = new ArrayList<>();
 
         try{
             reader = new BufferedReader(new FileReader(filename));
@@ -21,52 +22,24 @@ public class FileService {
             line = reader.readLine();
 
             while(line!=null){
-                processData(line,"model3",filename);
+                //processData(line,"model3",filename);
+
+                String dateOfSales = line.split(",")[0];
+                YearMonth yearMonth = YearMonth.parse(dateOfSales, DateTimeFormatter.ofPattern("MMM-yy"));
+                int sales = Integer.parseInt(line.split(",")[1]);
+                CarSalesData lineData = new CarSalesData("Tesla", modelType, yearMonth, sales);
+                carSalesList.add(lineData);
                 line = reader.readLine();
             }
+
 
         }
         catch (IOException e){
             e.printStackTrace();
         }
+        return carSalesList;
 
     }
 
-    private static void  processData(String line, String model, String filename){
 
-        Date date = null;
-        int year = 0;
-       String dateOfSales = line.split(",")[0];
-       int sales = Integer.parseInt(line.split(",")[1]);
-
-        DateFormat df = new SimpleDateFormat("MMM-yy");
-        try {
-            date = df.parse(dateOfSales);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            year = cal.get(Calendar.YEAR);
-        } catch (ParseException ex) {
-            date = null;
-        }
-
-
-        CarSalesData lineData = new CarSalesData("Tesla", model, date, sales, year);
-
-       if (filename.equals("model3.csv")) {
-
-           SalesDataAnalysisApplication.model3Data.add(lineData);
-       }
-        else if (filename.equals("modelS.csv")) {
-
-            SalesDataAnalysisApplication.modelSData.add(lineData);
-        }
-        else if (filename.equals("modelX.csv")) {
-
-            SalesDataAnalysisApplication.modelXData.add(lineData);
-        }
-
-
-
-
-    }
 }

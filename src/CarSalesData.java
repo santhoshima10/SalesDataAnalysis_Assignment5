@@ -1,28 +1,19 @@
-import java.util.Date;
+import java.time.YearMonth;
 
 public class CarSalesData {
 
     private String name;
     private String model;
-    private Date saleDate;
-    private int salesCount;
+    private YearMonth saleDate;
+    private Integer salesCount;
 
-    public int getSaleYear() {
-        return saleYear;
-    }
 
-    public void setSaleYear(int saleYear) {
-        this.saleYear = saleYear;
-    }
-
-    private int saleYear;
-
-    public CarSalesData(String name, String model, Date saleDate, int salesCount, int saleYear) {
+    public CarSalesData(String name, String model, YearMonth saleDate, Integer salesCount) {
         this.name = name;
         this.model = model;
         this.saleDate = saleDate;
         this.salesCount = salesCount;
-        this.saleYear = saleYear;
+
 
     }
 
@@ -43,19 +34,29 @@ public class CarSalesData {
         this.model = model;
     }
 
-    public Date getSaleDate() {
+    @Override
+    public String toString() {
+        return "CarSalesData{" +
+                "name='" + name + '\'' +
+                ", model='" + model + '\'' +
+                ", saleDate=" + saleDate +
+                ", salesCount=" + salesCount +
+                '}';
+    }
+
+    public YearMonth getSaleDate() {
         return saleDate;
     }
 
-    public void setSaleDate(Date saleDate) {
+    public void setSaleDate(YearMonth saleDate) {
         this.saleDate = saleDate;
     }
 
-    public int getSalesCount() {
+    public Integer getSalesCount() {
         return salesCount;
     }
 
-    public void setSalesCount(int salesCount) {
+    public void setSalesCount(Integer salesCount) {
         this.salesCount = salesCount;
     }
 
